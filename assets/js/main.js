@@ -1,8 +1,5 @@
 /**
-* Template Name: Arsha
-* Updated: Sep 18 2023 with Bootstrap v5.3.2
-* Template URL: https://bootstrapmade.com/arsha-free-bootstrap-html-template-corporate/
-* Author: BootstrapMade.com
+* Author: Semantee
 * License: https://bootstrapmade.com/license/
 */
 (function() {
@@ -171,6 +168,25 @@
   const glightbox = GLightbox({
     selector: '.glightbox'
   });
+
+/**
+   * Init swiper sliders
+   */
+function initSwiper() {
+  document.querySelectorAll(".init-swiper").forEach(function(swiperElement) {
+    let config = JSON.parse(
+      swiperElement.querySelector(".swiper-config").innerHTML.trim()
+    );
+
+    if (swiperElement.classList.contains("swiper-tab")) {
+      initSwiperWithCustomPagination(swiperElement, config);
+    } else {
+      new Swiper(swiperElement, config);
+    }
+  });
+}
+
+window.addEventListener("load", initSwiper);
 
   /**
    * Skills animation
