@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Semantee logo animation</title>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: white;
+            overflow: hidden;
+        }
+        canvas {
+            background-color: white;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Set canvas size
+        canvas.width = 800;
+        canvas.height = 800;
+        
+        // Center of the canvas
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+        
+        // Particles array
+        let particles = [];
+        
+        // Colors
+        const colors = {
+            yellow: '#FFD700',
+            blue: '#191970',
+            green: '#32CD32',
+            darkBlue: '#4682B4'
+        };
+        
+        // Class for particles
+        class Particle {
+            constructor(x, y, radius, color) {
+                this.x = x;
+                this.y = y;
+                this.originalX = x;
+                this.originalY = y;
+                this.radius = radius;
+                this.color = color;
+                this.dx = 0;
+                this.dy = 0;
+                this.velocity = Math.random() * 0.2 + 0.1;
+                this.angle = Math.random() * Math.PI * 2;
+                this.range = Math.random() * 10 + 5;
+            }
+            
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+                ctx.closePath();
+            }
+            
+            update() {
+                // Add gentle random movement when hovered
+                if (isHovering) {
+                    this.x += Math.cos(this.angle) * this.velocity;
+                    this.y += Math.sin(this.angle) * this.velocity;
+                    
+                    // Change direction occasionally
+                    if (Math.random() < 0.02) {
+                        this.angle = Math.random() * Math.PI * 2;
+                    }
+                    
+                    // Return to original position gradually when too far
+                    const distance = Math.sqrt(
+                        Math.pow(this.x - this.originalX, 2) + 
+                        Math.pow(this.y - this.originalY, 2)
+                    );
+                    
+                    if (distance > this.range) {
+                        this.x -= (this.x - this.originalX) * 0.05;
+                        this.y -= (this.y - this.originalY) * 0.05;
+                    }
+                } else {
+                    // Return to original position when not hovering
+                    this.x -= (this.x - this.originalX) * 0.1;
+                    this.y -= (this.y - this.originalY) * 0.1;
+                }
+                
+                this.draw();
+            }
+        }
+        
+        // Generate particles in a circle
+        function generateCircleParticles(centerX, centerY, radius, count, color, particleSizeRange = [2, 6], arc = [0, Math.PI * 2]) {
+            for (let i = 0; i < count; i++) {
+                const angle = arc[0] + Math.random() * (arc[1] - arc[0]);
+                const distance = Math.random() * radius;
+                const x = centerX + Math.cos(angle) * distance;
+                const y = centerY + Math.sin(angle) * distance;
+                const particleRadius = Math.random() * (particleSizeRange[1] - particleSizeRange[0]) + particleSizeRange[0];
+                
+                particles.push(new Particle(x, y, particleRadius, color));
+            }
+        }
+        
+        // Generate particles in an arc with better distribution
+        function generateArcParticles(centerX, centerY, innerRadius, outerRadius, count, color, startAngle, endAngle, particleSizeRange = [2, 6]) {
+            for (let i = 0; i < count; i++) {
+                const angle = startAngle + Math.random() * (endAngle - startAngle);
+                // Better distribution across the ring
+                const radius = innerRadius + Math.pow(Math.random(), 0.5) * (outerRadius - innerRadius);
+                const x = centerX + Math.cos(angle) * radius;
+                const y = centerY + Math.sin(angle) * radius;
+                const particleRadius = Math.random() * (particleSizeRange[1] - particleSizeRange[0]) + particleSizeRange[0];
+                
+                particles.push(new Particle(x, y, particleRadius, color));
+            }
+        }
+        
+        // Convert degrees to radians
+        function toRadians(degrees) {
+            return degrees * Math.PI / 180;
+        }
+        
+        // Initialize particles
+        function init() {
+            particles = [];
+            
+            // Yellow center circle (increased density)
+            generateCircleParticles(centerX, centerY, 100, 600, colors.yellow, [2, 6]);
+            
+            // Define angles in degrees then convert to radians for clarity
+            
+            // Dark blue arc on top (from 170° to 10°)
+            const darkBlueStartAngle = toRadians(140);
+            const darkBlueEndAngle = toRadians(0); 
+            generateArcParticles(centerX, centerY, 130, 230, 800, colors.darkBlue, darkBlueStartAngle, darkBlueEndAngle, [2, 6]);
+            
+            // Light blue arc on bottom (from 350° to 170°)
+            const lightBlueStartAngle = toRadians(320);
+            const lightBlueEndAngle = toRadians(180);
+            generateArcParticles(centerX, centerY, 130, 230, 800, colors.blue, lightBlueStartAngle, lightBlueEndAngle, [2, 6]);
+            
+            // Green circle at 30 degrees (in the top-right gap)
+            const greenX1 = centerX + Math.cos(toRadians(-20)) * 190;
+            const greenY1 = centerY + Math.sin(toRadians(-20)) * 190;
+            generateCircleParticles(greenX1, greenY1, 50, 300, colors.green, [2, 5]);
+            
+            // Green circle at 210 degrees (in the bottom-left gap)
+            const greenX2 = centerX + Math.cos(toRadians(160)) * 190;
+            const greenY2 = centerY + Math.sin(toRadians(160)) * 190;
+            generateCircleParticles(greenX2, greenY2, 50, 300, colors.green, [2, 5]);
+        }
+        
+        // Mouse hover detection
+        let isHovering = false;
+        
+        canvas.addEventListener('mouseover', () => {
+            isHovering = true;
+        });
+        
+        canvas.addEventListener('mouseout', () => {
+            isHovering = false;
+        });
+        
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            particles.forEach(particle => {
+                particle.update();
+            });
+        }
+        
+        // Initialize and start animation
+        init();
+        animate();
+    </script>
+</body>
+</html>
