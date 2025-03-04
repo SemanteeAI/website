@@ -1642,6 +1642,17 @@ section {
   content: "/";
 }
 
+br {
+  display: block;
+  content: "";
+  height: 10px; /* Adjust for space */
+}
+
+p {
+  display: block; /* Ensure it remains a block-level element */
+  margin-bottom: 10px; /* Adjust for spacing */
+}
+
 /*--------------------------------------------------------------
 # Cookie Banner
 --------------------------------------------------------------*/
