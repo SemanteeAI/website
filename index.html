@@ -405,26 +405,60 @@
   </footer><!-- End Footer -->
 <!-- Cookie Consent Banner -->
 <div id="cookie-banner" class="cookie-banner">
-  <p class="cookie-text">This website uses cookies to ensure you get the best experience. <a href="cookie-policy.html"> Learn more</a></p>
-
-  <br> 
-  
-  <p class="cookie-text">Tato stránka využivá souborů cookies pro vylepšení zákaznické zkušenosti. <a href="cookie-policy.html"> Více</a></p>
-  
+  <p id="cookie-text" class="cookie-text">
+    This website uses cookies to ensure you get the best experience. <a id="cookie-link" href="cookie-policy.html">Learn more</a>
+  </p>
   <button id="accept-cookies">OK</button>
 </div>
 
 <script>
   document.addEventListener("DOMContentLoaded", function () {
+    // Language translations
+    const translations = {
+      en: { text: "This website uses cookies to ensure you get the best experience.", link: "Learn more", button: "OK" },
+      de: { text: "Diese Website verwendet Cookies, um sicherzustellen, dass Sie die beste Erfahrung machen.", link: "Mehr erfahren", button: "OK" },
+      fr: { text: "Ce site utilise des cookies pour vous garantir la meilleure expérience.", link: "En savoir plus", button: "OK" },
+      es: { text: "Este sitio web utiliza cookies para garantizar la mejor experiencia.", link: "Saber más", button: "OK" },
+      it: { text: "Questo sito utilizza i cookie per garantire la migliore esperienza.", link: "Scopri di più", button: "OK" },
+      nl: { text: "Deze website gebruikt cookies om ervoor te zorgen dat u de beste ervaring krijgt.", link: "Meer info", button: "OK" },
+      pl: { text: "Ta strona używa plików cookie, aby zapewnić najlepsze doświadczenia.", link: "Dowiedz się więcej", button: "OK" },
+      pt: { text: "Este site utiliza cookies para garantir a melhor experiência.", link: "Saiba mais", button: "OK" },
+      sv: { text: "Denna webbplats använder cookies för att säkerställa bästa upplevelse.", link: "Läs mer", button: "OK" },
+      da: { text: "Denne hjemmeside bruger cookies for at sikre, at du får den bedste oplevelse.", link: "Lær mere", button: "OK" },
+      no: { text: "Dette nettstedet bruker informasjonskapsler for å sikre den beste opplevelsen.", link: "Lær mer", button: "OK" },
+      fi: { text: "Tämä verkkosivusto käyttää evästeitä varmistaakseen parhaan kokemuksen.", link: "Lue lisää", button: "OK" },
+      hu: { text: "Ez a weboldal cookie-kat használ a legjobb élmény biztosítása érdekében.", link: "Tudj meg többet", button: "OK" },
+      ro: { text: "Acest site utilizează cookie-uri pentru a asigura cea mai bună experiență.", link: "Aflați mai multe", button: "OK" },
+      bg: { text: "Този уебсайт използва бисквитки, за да осигури най-доброто изживяване.", link: "Научете повече", button: "OK" },
+      ru: { text: "Этот сайт использует файлы cookie для обеспечения наилучшего опыта.", link: "Узнать больше", button: "OK" },
+      tr: { text: "Bu web sitesi, en iyi deneyimi sağlamak için çerezleri kullanır.", link: "Daha fazla bilgi", button: "OK" },
+      ja: { text: "このウェブサイトは、最高の体験を提供するためにクッキーを使用します。", link: "詳細はこちら", button: "OK" },
+      zh: { text: "本网站使用 Cookie 以确保您获得最佳体验。", link: "了解更多", button: "OK" },
+      ko: { text: "이 웹사이트는 최고의 경험을 보장하기 위해 쿠키를 사용합니다.", link: "더 알아보기", button: "OK" },
+      cz: { text: "Tato webová stránka používá cookies, aby vám zajistila nejlepší zážitek.", link: "Více informací", button: "OK" }
+    };
+
+    // Detect browser language
+    const userLang = navigator.language.slice(0, 2);
+    const selectedLang = translations[userLang] || translations["en"]; // Default to English
+
+    // Apply translations
+    document.getElementById("cookie-text").innerHTML = `${selectedLang.text} <a id="cookie-link" href="cookie-policy.html">${selectedLang.link}</a>`;
+    document.getElementById("accept-cookies").textContent = selectedLang.button;
+
+    // Display cookie banner if not accepted
     if (!localStorage.getItem("cookiesAccepted")) {
       document.getElementById("cookie-banner").style.display = "flex";
     }
+
     document.getElementById("accept-cookies").addEventListener("click", function () {
       localStorage.setItem("cookiesAccepted", "true");
       document.getElementById("cookie-banner").style.display = "none";
     });
   });
 </script>
+
+
 
   <div id="preloader"></div>
   <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
